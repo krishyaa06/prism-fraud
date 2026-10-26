@@ -1,0 +1,34 @@
+<div class="sim">
+  <div class="main">
+    <div class="panel glow">
+      <div class="toolbar">
+        <button class="btn primary sm" data-play>▶ Run</button>
+        <select data-speed aria-label="Speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="3">3×</option></select>
+        <span class="sep"></span>
+        <button class="btn sm bad" data-atk="card-testing">Card-testing bot</button>
+        <button class="btn sm bad" data-atk="ato">Account takeover</button>
+        <button class="btn sm bad" data-atk="skimming">Cloned card abroad</button>
+        <button class="btn sm bad" data-atk="bustout">Bust-out spree</button>
+        <span class="sp"></span>
+        <span class="live"><i></i> paused</span>
+      </div>
+      <div id="kpis" style="margin-top:12px"></div>
+    </div>
+    <div class="viz" id="mapw" style="height:470px"><span class="tag" id="clock">card authorisations · India + cross-border</span><canvas id="map"></canvas></div>
+    <div class="g2 grid">
+      <div class="panel"><div class="ph">Score distribution <span class="sp"></span><span class="pill dim" id="aucp">AUC —</span></div><canvas class="chart" id="hist" style="height:150px"></canvas></div>
+      <div class="panel"><div class="ph">Precision · recall (labelled)</div><canvas class="chart" id="pr" style="height:150px"></canvas></div>
+    </div>
+  </div>
+  <div class="side">
+    <div class="panel"><div class="ph">Decision inspector <span class="sp"></span><span class="pill dim" id="insw">latest flagged</span></div><div id="insp" class="insp"></div></div>
+    <div class="panel"><div class="ph">Review queue <span class="sp"></span><span class="pill dim" id="qn">0 open</span></div><div id="queue" class="queue"></div></div>
+    <div class="panel"><div class="ph">Policy <span class="sp"></span><span class="pill dim" id="rver">—</span></div>
+      <div class="th"><label>Review ≥ <b id="rv">450</b><input type="range" id="rth" min="100" max="950" step="25" value="450"></label><label>Decline ≥ <b id="dv">800</b><input type="range" id="dth" min="150" max="1000" step="25" value="800"></label></div>
+      <label class="tg"><input type="checkbox" id="learn" checked> online learning from labels</label>
+      <textarea id="rules" rows="9" spellcheck="false" wrap="off"></textarea>
+      <div class="toolbar" style="margin-top:8px"><button class="btn primary sm" id="apply">Apply rules</button><button class="btn sm" id="reset">Reset</button><span class="sp"></span><span id="rstat" class="rstat"></span></div>
+    </div>
+    <div class="panel"><div class="ph">Events</div><div id="log" class="log" style="height:180px;font-size:11px"></div></div>
+  </div>
+</div>

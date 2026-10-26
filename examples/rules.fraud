@@ -1,0 +1,10 @@
+# Prism Fraud rules. Actions: decline | review | approve | score +N / -N
+# decline beats review beats approve; score rules adjust the model score (0-1000).
+rule "card-testing"      decline when ip.cards_1h >= 4 and amount < 100
+rule "impossible-travel" decline when travel.kmh > 900 and travel.km > 500
+rule "device-farm"       review  when device.cards_24h >= 3
+rule "burst"             review  when card.count_10m >= 5
+rule "ato-new-device"    score +180 when device.new and country != card.home and amount > 5000
+rule "risky-goods-night" score +120 when mcc in ["giftcard", "crypto"] and hour < 5
+rule "trusted-regular"   approve when card.tier == "vip" and not device.new and amount < 20000
+

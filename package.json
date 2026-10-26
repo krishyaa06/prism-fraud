@@ -1,0 +1,43 @@
+{
+  "name": "prism-fraud",
+  "version": "1.0.0",
+  "description": "Prism Fraud decides approve, review or decline for every card authorisation in microseconds. It keeps exact sliding windows per card, device and IP (counts, sums, distinct cards), a running spend profile per card, and the last known location for impossible-travel checks. Analysts write rules in a small language (`rule \"card-testing\" decline when ip.cards_1h >= 4 and amount < 100`) that is parsed by a Pratt parser, linted against known fields and hot-reloaded without a deploy. A 14-feature logistic model, trained on synthetic traffic with ground truth and updated online from chargebacks and analyst verdicts, adds a calibrated score with per-feature explanations. A synthetic traffic generator with four fraud patterns (card testing, account takeover, cloned cards, bust-out) measures precision, recall and money saved.",
+  "type": "module",
+  "bin": {
+    "fraud": "bin/fraud.js"
+  },
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "bin",
+    "src"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "start": "npx --yes serve ."
+  },
+  "keywords": [
+    "fraud-detection",
+    "risk-engine",
+    "fintech",
+    "payments",
+    "machine-learning",
+    "rules-engine",
+    "anomaly-detection",
+    "real-time",
+    "explainable-ai",
+    "javascript"
+  ],
+  "author": "Soumya Bhandare (krishyaa06)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krishyaa06/prism-fraud.git"
+  },
+  "homepage": "https://krishyaa06.github.io/prism-fraud/",
+  "engines": {
+    "node": ">=18.17"
+  }
+}

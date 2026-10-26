@@ -1,0 +1,32 @@
+#kpis{grid-template-columns:repeat(6,minmax(0,1fr))}
+@media(max-width:1200px){#kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:480px){#kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){#mapw{height:560px!important}}
+.insp{font:11px/1.55 var(--mono);min-height:190px}
+.insp .hd{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.insp .dec{font-weight:700;padding:2px 8px;border-radius:6px;font-size:11px}
+.insp .dec.approve{background:rgba(52,245,197,.14);color:var(--ok)}.insp .dec.review{background:rgba(255,181,71,.14);color:var(--warn)}.insp .dec.decline{background:rgba(255,92,138,.16);color:var(--bad)}
+.insp .meter{height:6px;border-radius:4px;background:rgba(255,255,255,.06);position:relative;margin:6px 0 8px;overflow:hidden}
+.insp .meter i{position:absolute;inset:0 auto 0 0;border-radius:4px;background:linear-gradient(90deg,var(--ok),var(--warn),var(--bad))}
+.insp .meter b{position:absolute;top:-2px;bottom:-2px;width:1px;background:rgba(255,255,255,.5)}
+.insp .rs div{padding:1px 0}.insp .r{color:#ff9bbb}.insp .mdl{color:var(--muted)}
+.insp .ft{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 12px;margin-top:8px;color:var(--muted)}
+.insp .ft span b{color:var(--text);font-weight:500}
+.insp .empty{color:var(--faint)}
+.queue{font:11px var(--mono);max-height:220px;overflow:auto}
+.queue .row{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.queue .row:hover{background:rgba(255,255,255,.02)}
+.queue .row .m{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.queue .row .m small{display:block;color:var(--muted)}
+.queue .x{padding:2px 7px;font-size:10px}
+.queue .empty{color:var(--faint);padding:6px 0}
+.th{display:grid;grid-template-columns:1fr 1fr;gap:10px;font:11px var(--mono);color:var(--muted)}
+.th label{display:flex;flex-direction:column;gap:4px}.th b{color:var(--text)}
+.th input{width:100%;accent-color:var(--accent)}
+.tg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);margin:10px 0 8px}
+.tg input{width:auto;margin:0}
+#rules{width:100%;font:10.5px/1.55 var(--mono);white-space:pre;overflow:auto;min-height:170px;resize:vertical}
+#rules.err{border-color:var(--bad)}
+.rstat{font:11px var(--mono);color:var(--muted);text-align:right;max-width:58%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rstat.bad{color:var(--bad)}.rstat.ok{color:var(--ok)}.rstat.warn{color:var(--warn)}
+#insw{cursor:pointer}

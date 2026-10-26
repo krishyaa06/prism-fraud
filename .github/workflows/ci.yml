@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm test
+      - name: Smoke test
+        run: |
+          node bin/fraud.js demo && node bin/fraud.js score examples/tx.json && node bin/fraud.js rules examples/rules.fraud --strict && node bin/fraud.js simulate --minutes 3 && node bin/fraud.js train --hours 2 && node bin/fraud.js bench --n 20000

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prism Fraud · Real-time fraud scoring with rules, velocity features and an online model · Prism Systems</title>
+  <meta name="description" content="Prism Fraud decides approve, review or decline for every card authorisation in microseconds. It keeps exact sliding windows per card, device and IP (counts, sums, distinct cards), a running spend profile per card, and the last known location for impossible-travel checks. Analysts write rules in a small language (`rule &quot;card-testing&quot; decline when ip.cards_1h &gt;= 4 and amount &lt; 100`) that is parsed by a Pratt parser, linted against known fields and hot-reloaded without a deploy. A 14-feature logistic model, trained on synthetic traffic with ground truth and updated online from chargebacks and analyst verdicts, adds a calibrated score with per-feature explanations. A synthetic traffic generator with four fraud patterns (card testing, account takeover, cloned cards, bust-out) measures precision, recall and money saved." />
+  <meta name="theme-color" content="#06070d" />
+  <meta property="og:title" content="Prism Fraud · Prism Systems" />
+  <meta property="og:description" content="Prism Fraud decides approve, review or decline for every card authorisation in microseconds. It keeps exact sliding windows per card, device and IP (counts, sums, distinct cards), a running spend profile per card, and the last known location for impossible-travel checks. Analysts write rules in a small language (`rule &quot;card-testing&quot; decline when ip.cards_1h &gt;= 4 and amount &lt; 100`) that is parsed by a Pratt parser, linted against known fields and hot-reloaded without a deploy. A 14-feature logistic model, trained on synthetic traffic with ground truth and updated online from chargebacks and analyst verdicts, adds a calibrated score with per-feature explanations. A synthetic traffic generator with four fraud patterns (card testing, account takeover, cloned cards, bust-out) measures precision, recall and money saved." />
+  <meta property="og:image" content="https://krishyaa06.github.io/prism-fraud/assets/screenshots/desktop.png" />
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/pro.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <style>:root{--accent:#FF5C8A;--accent-2:#7C5CFF}</style>
+</head>
+<body>
+  <canvas id="bg" aria-hidden="true"></canvas>
+  <header class="topbar"><div class="wrap">
+    <a class="brand" href="./"><span class="mark">◆</span><b>PRISM</b><span>Fraud</span></a>
+    <nav>
+      <a class="nl" href="#sim">Simulator</a><a class="nl" href="#features">Features</a><a class="nl" href="#how">How it works</a><a class="nl" href="#arch">Architecture</a><a class="nl" href="#use">Use it</a>
+      <a class="btn sm" href="https://github.com/krishyaa06/prism-fraud" target="_blank" rel="noreferrer">★ GitHub</a>
+    </nav>
+  </div></header>
+  <main>
+    <section class="hero wrap">
+      <p class="eyebrow"><span class="n">09 / 49</span>Prism Systems · FinTech &amp; Banking</p>
+      <h1>Stop card fraud <em>in 15 microseconds</em>, and explain every decision</h1>
+      <p class="lead">Real-time transaction risk scoring: exact sliding-window velocity features per card, device and IP, impossible-travel detection, per-card spend z-scores, an analyst rule language with explainable traces, an online logistic model that learns from chargebacks and analyst verdicts, a review queue, and an HTTP scoring API.</p>
+      <div class="cta"><a class="btn primary" href="#sim">▶ Launch the simulator</a><a class="btn" href="#use">Use the engine</a><a class="btn ghost" href="https://github.com/krishyaa06/prism-fraud" target="_blank" rel="noreferrer">View source →</a></div>
+      <div class="chips"><span class="chip"><i></i>Zero dependencies</span><span class="chip"><i></i>~15 µs per decision</span><span class="chip"><i></i>Explainable rules + model</span><span class="chip"><i></i>Online learning</span><span class="chip"><i></i>Synthetic ground truth</span></div>
+    </section>
+    <section class="section wrap" id="sim">
+      <div class="sec-head"><span class="kicker">Live simulator</span><h2>A live card network with fraud attacks in progress</h2><p>Every dot is an authorisation in an Indian or foreign city. Launch a card-testing bot, an account takeover, a cloned card abroad or a bust-out spree and watch what gets stopped. Work the review queue, drag the thresholds, edit the rules and apply them live.</p></div>
+<div class="sim">
+  <div class="main">
+    <div class="panel glow">
+      <div class="toolbar">
+        <button class="btn primary sm" data-play>▶ Run</button>
+        <select data-speed aria-label="Speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="3">3×</option></select>
+        <span class="sep"></span>
+        <button class="btn sm bad" data-atk="card-testing">Card-testing bot</button>
+        <button class="btn sm bad" data-atk="ato">Account takeover</button>
+        <button class="btn sm bad" data-atk="skimming">Cloned card abroad</button>
+        <button class="btn sm bad" data-atk="bustout">Bust-out spree</button>
+        <span class="sp"></span>
+        <span class="live"><i></i> paused</span>
+      </div>
+      <div id="kpis" style="margin-top:12px"></div>
+    </div>
+    <div class="viz" id="mapw" style="height:470px"><span class="tag" id="clock">card authorisations · India + cross-border</span><canvas id="map"></canvas></div>
+    <div class="g2 grid">
+      <div class="panel"><div class="ph">Score distribution <span class="sp"></span><span class="pill dim" id="aucp">AUC —</span></div><canvas class="chart" id="hist" style="height:150px"></canvas></div>
+      <div class="panel"><div class="ph">Precision · recall (labelled)</div><canvas class="chart" id="pr" style="height:150px"></canvas></div>
+    </div>
+  </div>
+  <div class="side">
+    <div class="panel"><div class="ph">Decision inspector <span class="sp"></span><span class="pill dim" id="insw">latest flagged</span></div><div id="insp" class="insp"></div></div>
+    <div class="panel"><div class="ph">Review queue <span class="sp"></span><span class="pill dim" id="qn">0 open</span></div><div id="queue" class="queue"></div></div>
+    <div class="panel"><div class="ph">Policy <span class="sp"></span><span class="pill dim" id="rver">—</span></div>
+      <div class="th"><label>Review ≥ <b id="rv">450</b><input type="range" id="rth" min="100" max="950" step="25" value="450"></label><label>Decline ≥ <b id="dv">800</b><input type="range" id="dth" min="150" max="1000" step="25" value="800"></label></div>
+      <label class="tg"><input type="checkbox" id="learn" checked> online learning from labels</label>
+      <textarea id="rules" rows="9" spellcheck="false" wrap="off"></textarea>
+      <div class="toolbar" style="margin-top:8px"><button class="btn primary sm" id="apply">Apply rules</button><button class="btn sm" id="reset">Reset</button><span class="sp"></span><span id="rstat" class="rstat"></span></div>
+    </div>
+    <div class="panel"><div class="ph">Events</div><div id="log" class="log" style="height:180px;font-size:11px"></div></div>
+  </div>
+</div>
+
+    </section>
+    <section class="section wrap" id="features">
+      <div class="sec-head reveal"><span class="kicker">Features</span><h2>What's inside the engine</h2><p>Real algorithms, not mock-ups. The simulator above runs the exact same code you import.</p></div>
+      <div class="feat"><div class="card reveal"><div class="ic">⏱</div><h3>Exact sliding windows</h3><p>Per-card counts and sums over 10 min, 1 h and 24 h, distinct cards per device (24 h) and per IP (1 h), tiny-authorisation bursts per IP. Pruning is O(1) amortised; there is no approximation.</p></div><div class="card reveal"><div class="ic">✈</div><h3>Impossible travel</h3><p>Haversine distance from the card&#x27;s last approved location divided by elapsed time. A Mumbai purchase followed by London 20 minutes later is 22,000 km/h.</p></div><div class="card reveal"><div class="ic">σ</div><h3>Spend profile</h3><p>A Welford running mean and variance of log amounts per card gives a z-score, so ₹40,000 is normal for one customer and extreme for another.</p></div><div class="card reveal"><div class="ic">⌘</div><h3>Rule language</h3><p><code class="mono">decline</code>, <code class="mono">review</code>, <code class="mono">approve</code> and <code class="mono">score +N</code> rules with <code class="mono">and or not in</code>, arithmetic, lists and <code class="mono">5k</code> / <code class="mono">2m</code> suffixes. Errors come with line and column, and a linter catches unknown fields.</p></div><div class="card reveal"><div class="ic">◉</div><h3>Explainable</h3><p>Every comparison records the value it saw (<code class="mono">travel.kmh &gt; 900 ← 22,431</code>), and the model reports its top feature contributions in plain language.</p></div><div class="card reveal"><div class="ic">∿</div><h3>Online model</h3><p>A 14-feature logistic regression with AdaGrad and L2, class-weighted for rare fraud. Chargebacks and analyst verdicts update it as they arrive.</p></div><div class="card reveal"><div class="ic">☰</div><h3>Review queue</h3><p>Borderline transactions open a case. Analyst decisions label the transaction, close the case and train the model, and outcome metrics track precision, recall and money saved.</p></div><div class="card reveal"><div class="ic">⚡</div><h3>HTTP API</h3><p><code class="mono">POST /v1/score</code> (with <code class="mono">?explain</code>), <code class="mono">POST /v1/label</code>, case endpoints, <code class="mono">GET /v1/metrics</code> and <code class="mono">PUT /v1/rules</code> for hot reload.</p></div></div>
+    </section>
+    <section class="section wrap" id="how">
+      <div class="sec-head reveal"><span class="kicker">How it works</span><h2>From request to result</h2></div>
+      <div class="steps"><div class="step reveal"><h3>Look up</h3><p>The card&#x27;s profile comes from the feature store the first time it is seen: home country, tier, known devices, spend distribution and last location.</p></div><div class="step reveal"><h3>Featurise</h3><p>Windows for card, device and IP are queried before the transaction is recorded, plus z-score, travel speed, merchant category risk and channel.</p></div><div class="step reveal"><h3>Score</h3><p>The model turns 14 features into a probability (score 0–1000). Rules then run against the same context, and <code class="mono">score</code> rules adjust it.</p></div><div class="step reveal"><h3>Decide</h3><p>Decline beats review beats approve. An approve rule can override a model review but never a decline. Thresholds are configurable.</p></div><div class="step reveal"><h3>Learn</h3><p>Chargebacks, confirmed-good labels and analyst verdicts arrive later and update both the outcome metrics and the model weights.</p></div></div>
+    </section>
+    <section class="section wrap" id="arch">
+      <div class="sec-head reveal"><span class="kicker">Architecture</span><h2>System design</h2><p>Every box is a module in src/. Data flows left to right.</p></div>
+      <div class="card arch reveal"><svg viewBox="0 0 1160 230" role="img" aria-label="Architecture diagram"><path class="e" d="M272,73 C290,73 290,73 308,73"/><path class="f" d="M272,73 C290,73 290,73 308,73"/><path class="e" d="M272,153 C290,153 290,153 308,153"/><path class="f" d="M272,153 C290,153 290,153 308,153"/><path class="e" d="M562,73 C580,73 580,73 598,73"/><path class="f" d="M562,73 C580,73 580,73 598,73"/><path class="e" d="M562,153 C580,153 580,153 598,153"/><path class="f" d="M562,153 C580,153 580,153 598,153"/><path class="e" d="M852,73 C870,73 870,73 888,73"/><path class="f" d="M852,73 C870,73 870,73 888,73"/><path class="e" d="M852,153 C870,153 870,73 888,73"/><path class="f" d="M852,153 C870,153 870,73 888,73"/><path class="e" d="M1128,102 C1158,102 1158,124 1128,124"/><path class="f" d="M1128,102 C1158,102 1158,124 1128,124"/><path class="e" d="M888,153 C870,153 870,73 852,73"/><path class="f" d="M888,153 C870,153 870,73 852,73"/><text class="el" x="870" y="107" text-anchor="middle">learn</text><text class="lane" x="145" y="24" text-anchor="middle">INPUTS</text><g class="node k0"><rect x="18" y="44" width="254" height="58" rx="12"/><text x="145" y="69" text-anchor="middle">Authorisation</text><text class="s" x="145" y="83" text-anchor="middle">card · device · ip · geo</text></g><g class="node k0"><rect x="18" y="124" width="254" height="58" rx="12"/><text x="145" y="149" text-anchor="middle">Feature store</text><text class="s" x="145" y="163" text-anchor="middle">card profiles</text></g><text class="lane" x="435" y="24" text-anchor="middle">FEATURES</text><g class="node kk2"><rect x="308" y="44" width="254" height="58" rx="12"/><text x="435" y="69" text-anchor="middle">Sliding windows</text><text class="s" x="435" y="83" text-anchor="middle">card · device · ip</text></g><g class="node kk2"><rect x="308" y="124" width="254" height="58" rx="12"/><text x="435" y="149" text-anchor="middle">Travel + z-score</text><text class="s" x="435" y="163" text-anchor="middle">haversine · Welford</text></g><text class="lane" x="725" y="24" text-anchor="middle">DECISION</text><g class="node kk3"><rect x="598" y="44" width="254" height="58" rx="12"/><text x="725" y="69" text-anchor="middle">Online model</text><text class="s" x="725" y="83" text-anchor="middle">logistic · AdaGrad</text></g><g class="node kk3"><rect x="598" y="124" width="254" height="58" rx="12"/><text x="725" y="149" text-anchor="middle">Rule engine</text><text class="s" x="725" y="163" text-anchor="middle">Pratt parser · trace</text></g><text class="lane" x="1015" y="24" text-anchor="middle">OUTCOMES</text><g class="node k0"><rect x="888" y="44" width="254" height="58" rx="12"/><text x="1015" y="69" text-anchor="middle">Decision</text><text class="s" x="1015" y="83" text-anchor="middle">approve · review · decline</text></g><g class="node k0"><rect x="888" y="124" width="254" height="58" rx="12"/><text x="1015" y="149" text-anchor="middle">Review + labels</text><text class="s" x="1015" y="163" text-anchor="middle">chargebacks · analysts</text></g></svg></div>
+    </section>
+    <section class="section wrap" id="use">
+      <div class="sec-head reveal"><span class="kicker">Use it</span><h2>Ship it in your own stack</h2><p>Zero dependencies. Works in Node.js 18+ and modern browsers.</p></div>
+      <div class="tabs" data-tabs="use"><button class="on">JavaScript API</button><button>CLI</button><button>Install</button></div>
+      <div class="tabp on" data-tabp="use"><div class="codebox"><div class="bar2"><i></i><i></i><i></i><span>example.js</span><button class="btn sm ghost copy" data-copy>Copy</button></div><pre><code><span class="tk-k">import</span> { FraudEngine } <span class="tk-k">from</span> <span class="tk-s">&quot;prism-fraud&quot;</span>;
+
+<span class="tk-k">const</span> fraud = <span class="tk-k">new</span> <span class="tk-f">FraudEngine</span>({
+  rules: <span class="tk-s">`rule &quot;card-testing&quot; decline when ip.cards_1h &gt;= 4 and amount &lt; 100
+          rule &quot;impossible-travel&quot; decline when travel.kmh &gt; 900 and travel.km &gt; 500
+          rule &quot;ato&quot; score +180 when device.new and country != card.home and amount &gt; 5k`</span>,
+  review: <span class="tk-n">450</span>, decline: <span class="tk-n">800</span>,
+  profiles: (cardId) =&gt; featureStore.<span class="tk-f">get</span>(cardId),   <span class="tk-c">// optional history: devices, spend, last location</span>
+});
+
+<span class="tk-k">const</span> r = fraud.<span class="tk-f">score</span>({
+  id: <span class="tk-s">&quot;tx-91&quot;</span>, t: Date.<span class="tk-f">now</span>() / <span class="tk-n">1000</span>, card: <span class="tk-s">&quot;card-00042&quot;</span>, amount: <span class="tk-n">64999</span>, mcc: <span class="tk-s">&quot;electronics&quot;</span>,
+  city: <span class="tk-s">&quot;Lagos&quot;</span>, country: <span class="tk-s">&quot;NG&quot;</span>, lat: <span class="tk-n">6.52</span>, lon: <span class="tk-n">3.38</span>, device: <span class="tk-s">&quot;dev-9&quot;</span>, ip: <span class="tk-s">&quot;203.0.113.7&quot;</span>, channel: <span class="tk-s">&quot;cnp&quot;</span>,
+}, { explain: <span class="tk-k">true</span> });
+
+r.decision;   <span class="tk-c">// &quot;decline&quot;</span>
+r.score;      <span class="tk-c">// 0..1000</span>
+r.by;         <span class="tk-c">// &quot;rule:impossible-travel&quot;</span>
+r.reasons;    <span class="tk-c">// [{ kind: &quot;rule&quot;, name: &quot;ato&quot;, delta: 180 }, { kind: &quot;model&quot;, why: &quot;first time this card is used on this device&quot; }]</span>
+r.trace;      <span class="tk-c">// every rule, every comparison, every value seen</span>
+
+fraud.<span class="tk-f">label</span>(<span class="tk-s">&quot;tx-91&quot;</span>, <span class="tk-k">true</span>);          <span class="tk-c">// chargeback -&gt; outcome metrics + online model update</span>
+fraud.<span class="tk-f">openCases</span>();                   <span class="tk-c">// review queue</span>
+fraud.<span class="tk-f">setRules</span>(src);                 <span class="tk-c">// hot reload</span>
+fraud.<span class="tk-f">metrics</span>();                     <span class="tk-c">// { auc, precision, recall, savedAmt, lostAmt, ... }</span></code></pre></div></div>
+      <div class="tabp" data-tabp="use"><div class="codebox"><div class="bar2"><i></i><i></i><i></i><span>terminal</span><button class="btn sm ghost copy" data-copy>Copy</button></div><pre><code><span class="tk-pr">$ </span>npx github:krishyaa06/prism-fraud demo
+<span class="tk-pr">$ </span>npx github:krishyaa06/prism-fraud score examples/tx.json
+<span class="tk-pr">$ </span>npx github:krishyaa06/prism-fraud simulate <span class="tk-p">--minutes</span> 10
+<span class="tk-pr">$ </span>npx github:krishyaa06/prism-fraud train <span class="tk-p">--hours</span> 24
+<span class="tk-pr">$ </span>npx github:krishyaa06/prism-fraud rules examples/rules.fraud
+<span class="tk-pr">$ </span>npx github:krishyaa06/prism-fraud bench
+<span class="tk-pr">$ </span>npx github:krishyaa06/prism-fraud serve <span class="tk-p">--port</span> 8787</code></pre></div></div>
+      <div class="tabp" data-tabp="use"><div class="codebox"><div class="bar2"><i></i><i></i><i></i><span>terminal</span><button class="btn sm ghost copy" data-copy>Copy</button></div><pre><code><span class="tk-c"># use the CLI without installing</span>
+<span class="tk-pr">$ </span>npx github:krishyaa06/prism-fraud <span class="tk-p">--help</span>
+
+<span class="tk-c"># or add the engine to your project</span>
+<span class="tk-pr">$ </span>npm install github:krishyaa06/prism-fraud
+
+<span class="tk-c"># run the simulator locally</span>
+<span class="tk-pr">$ </span>git clone https://github.com/krishyaa06/prism-fraud.git &amp;&amp; cd prism-fraud
+<span class="tk-pr">$ </span>npx serve .   # then open http://localhost:3000</code></pre></div></div>
+    </section>
+  </main>
+  <footer class="foot"><div class="wrap">
+    <span>◆ Prism Fraud · Prism Systems 09/49 · Built by <a href="https://github.com/krishyaa06">Soumya Bhandare</a> &amp; <a href="https://dc.gg/prismprotocol" target="_blank" rel="noreferrer">Prism Protocol</a></span>
+    <span><a href="https://github.com/krishyaa06/prism-fraud" target="_blank" rel="noreferrer">Source</a> · <a href="https://github.com/krishyaa06/prism-fraud/blob/main/docs/ARCHITECTURE.md">Architecture</a> · <a href="https://github.com/krishyaa06/prism-fraud/blob/main/docs/USAGE.md">Docs</a> · MIT License</span>
+  </div></footer>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
