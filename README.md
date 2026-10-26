@@ -1,4 +1,4 @@
-<!-- Prism Systems 09/49 -->
+<!-- Prism Systems 09/12 -->
 <p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=0:06070d,55:FF5C8A,100:7C5CFF&height=210&section=header&text=Prism%20Fraud&fontSize=50&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Real-time%20fraud%20scoring%20with%20rules%2C%20velocity%20features%20and%20an%20online%20model&descAlignY=57&descSize=17" width="100%" alt="Prism Fraud" />
 </p>
@@ -12,7 +12,7 @@
   <a href="https://krishyaa06.github.io/prism-fraud/"><img src="https://img.shields.io/badge/Live_Simulator-Open-FF5C8A?style=for-the-badge&logo=githubpages&logoColor=black" alt="Live simulator" /></a>
   <img src="https://img.shields.io/badge/Node.js-%E2%89%A518.17-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js 18+" />
   <img src="https://img.shields.io/badge/dependencies-0-7C5CFF?style=for-the-badge" alt="Zero dependencies" />
-  <img src="https://img.shields.io/badge/Prism_Systems-09%2F49-111827?style=for-the-badge" alt="Prism Systems 09/49" />
+  <img src="https://img.shields.io/badge/Prism_Systems-09%2F12-111827?style=for-the-badge" alt="Prism Systems 09/12" />
   <a href="LICENSE"><img src="https://img.shields.io/github/license/krishyaa06/prism-fraud?style=for-the-badge&color=7C5CFF" alt="MIT License" /></a>
 </p>
 
@@ -258,7 +258,7 @@ The test suite uses the built-in `node:test` runner, so there is nothing to inst
 
 ## 🔷 Part of Prism Systems
 
-**Prism Fraud** is system **09 of 49** in **Prism Systems**, a series of open-source reference implementations of large-scale infrastructure by [Prism Protocol](https://dc.gg/prismprotocol). Each one ships a real engine, a CLI and a live simulator, all with zero dependencies.
+**Prism Fraud** is system **09 of 12** in **Prism Systems**, a series of open-source reference implementations of large-scale infrastructure by [Prism Protocol](https://dc.gg/prismprotocol). Each one ships a real engine, a CLI and a live simulator, all with zero dependencies.
 
 ## 👤 Author
 
